@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/infrastructure/persistence/PrismaClient";
 import { CSVParser } from "@/infrastructure/services/CSVParser";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   try {
     console.log("--- UPLOAD START ---");
