@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  industry  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]
+  datasets  Dataset[]
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("ADMIN")
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Dataset {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  records     DatasetRecord[]
+  analyses    AnalysisSession[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DatasetRecord {
+  id        String   @id @default(uuid())
+  datasetId String
+  dataset   Dataset  @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  data      Json
+  createdAt DateTime @default(now())
+}
+
+model AnalysisSession {
+  id              String   @id @default(uuid())
+  datasetId       String
+  dataset         Dataset  @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  findings        Json     // Insights, trends, risks
+  recommendations StrategicRecommendation[]
+  status          String   @default("COMPLETED")
+  createdAt       DateTime @default(now())
+}
+
+model StrategicRecommendation {
+  id                String   @id @default(uuid())
+  analysisSessionId String
+  session           AnalysisSession @relation(fields: [analysisSessionId], references: [id], onDelete: Cascade)
+  title             String
+  description       String
+  priority          String   // HIGH, MEDIUM, LOW
+  impact            String?
+  createdAt         DateTime @default(now())
+}

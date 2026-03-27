@@ -1,0 +1,14 @@
+date,product,category,sales,quantity,customer_id
+2026-01-01,Laptop Pro,Electronics,1500,1,C001
+2026-01-02,Mouse Wireless,Electronics,25,2,C002
+2026-01-05,Monitor 4K,Electronics,400,1,C001
+2026-01-10,Keyboard RGB,Electronics,80,1,C003
+2026-01-15,Laptop Pro,Electronics,1500,1,C004
+2026-02-01,Laptop Pro,Electronics,1500,1,C005
+2026-02-05,Mouse Wireless,Electronics,25,5,C006
+2026-02-10,Webcam HD,Electronics,60,2,C001
+2026-02-15,Monitor 4K,Electronics,400,1,C007
+2026-03-01,Laptop Pro,Electronics,1500,2,C008
+2026-03-05,Headphones BT,Electronics,120,3,C009
+2026-03-10,Laptop Pro,Electronics,1500,1,C010
+2026-03-20,Mouse Wireless,Electronics,25,10,C011
