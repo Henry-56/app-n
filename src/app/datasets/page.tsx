@@ -252,7 +252,7 @@ export default function DatasetsPage() {
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-bold text-xs">
-                          {ds.fileType.toUpperCase()}
+                          {(ds.fileType || 'csv').toUpperCase()}
                         </div>
                         <span className="font-bold text-slate-700">{ds.name}</span>
                       </div>
