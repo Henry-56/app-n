@@ -1,0 +1,12 @@
+Date,Product,Category,Sales,MarketingChannel,MarketingSpend,Customer,Supplier
+2026-03-01,Milk 1L,Grocery,1.50,SEO,0.00,Customer A,Finca Central
+2026-03-01,Bread Pack,Snack,2.20,TikTok Ads,0.50,Customer B,PanArt
+2026-03-01,Soda 2L,Beverage,3.50,Meta Ads,1.20,Customer C,SodaCo
+2026-03-02,Milk 1L,Grocery,1.50,Direct,0.00,Customer D,Finca Central
+2026-03-02,Cookies,Snack,1.20,TikTok Ads,0.40,Customer E,CookieFactory
+2026-03-03,Beer 6-Pack,Beverage,8.99,Meta Ads,2.50,Customer F,Brewery Corp
+2026-03-03,Chips,Snack,2.50,Meta Ads,0.80,Customer G,SnackWorld
+2026-03-04,Milk 1L,Grocery,1.50,SEO,0.00,Customer H,Finca Central
+2026-03-04,Fruit Juice,Beverage,2.80,Influencer,1.00,Customer I,JuiceLab
+2026-03-05,Bread Pack,Snack,2.20,TikTok Ads,0.50,Customer J,PanArt
+2026-03-05,Soda 2L,Beverage,3.50,Meta Ads,1.20,Customer K,SodaCo

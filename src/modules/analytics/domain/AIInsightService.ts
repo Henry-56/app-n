@@ -4,4 +4,6 @@ export interface AIInsightService {
   projectScenario(data: any, scenario: string): Promise<any>;
   recommendActions(data: any): Promise<any[]>;
   detectRisks(data: any): Promise<any[]>;
+  predictSalesAndDemand(data: any): Promise<any>;
+  generateStrategicConsultation(data: any): Promise<any>;
 }

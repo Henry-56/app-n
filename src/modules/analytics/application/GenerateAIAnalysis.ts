@@ -22,15 +22,27 @@ export class GenerateAIAnalysis {
     const findings = await this.aiService.analyzeTrends(data);
     console.log("Findings generated:", !!findings);
 
+    console.log("Generating predictions (Sales & Demand)...");
+    const predictions = await this.aiService.predictSalesAndDemand(data);
+    console.log("Predictions generated:", !!predictions);
+
     console.log("Generating recommendations...");
     const recommendationList = await this.aiService.recommendActions(data);
     console.log("Recommendations generated:", recommendationList.length);
+
+    console.log("Generating strategic consultation...");
+    const strategicConsultation = await this.aiService.generateStrategicConsultation(data);
+    console.log("Consultation generated:", !!strategicConsultation);
 
     console.log("Saving analysis session...");
     const session = await this.analysisRepository.save({
       id: crypto.randomUUID(),
       datasetId,
-      findings,
+      findings: { 
+          ...findings, 
+          strategicConsultation 
+      },
+      predictions,
       status: "COMPLETED",
       createdAt: new Date(),
     });

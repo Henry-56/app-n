@@ -2,6 +2,7 @@ export interface AnalysisSession {
   id: string;
   datasetId: string;
   findings: any; // Structured JSON from Gemini
+  predictions?: any; // Projected metadata
   status: string;
   createdAt: Date;
 }

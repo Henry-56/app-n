@@ -7,29 +7,40 @@ export class PrismaAnalysisRepository implements AnalysisRepository {
       where: { id: analysis.id },
       update: {
         findings: analysis.findings as any,
+        predictions: analysis.predictions as any,
         status: analysis.status,
       },
       create: {
         id: analysis.id,
         datasetId: analysis.datasetId,
         findings: analysis.findings as any,
+        predictions: analysis.predictions as any,
         status: analysis.status,
       },
     });
     return {
         ...saved,
-        findings: saved.findings as any
+        findings: saved.findings as any,
+        predictions: saved.predictions as any
     };
   }
 
   async findById(id: string): Promise<AnalysisSession | null> {
     const s = await prisma.analysisSession.findUnique({ where: { id } });
     if (!s) return null;
-    return { ...s, findings: s.findings as any };
+    return { 
+        ...s, 
+        findings: s.findings as any,
+        predictions: s.predictions as any
+    };
   }
 
   async findByDatasetId(datasetId: string): Promise<AnalysisSession[]> {
     const sessions = await prisma.analysisSession.findMany({ where: { datasetId } });
-    return sessions.map((s: any) => ({ ...s, findings: s.findings as any }));
+    return sessions.map((s: any) => ({ 
+        ...s, 
+        findings: s.findings as any,
+        predictions: s.predictions as any
+    }));
   }
 }

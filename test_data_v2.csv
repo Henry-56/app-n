@@ -1,0 +1,29 @@
+Date,Product,Category,Sales,Quantity,Customer,Supplier,MarketingChannel,MarketingSpend
+2023-01-01,Laptop Pro,Electronics,1200,1,Global Tech,Computers Corp,Google Ads,50
+2023-01-15,Mouse Wireless,Electronics,25,2,Individual User,Peripherals Inc,Social Media,5
+2023-01-20,Coffee Maker,Home,85,1,Cafe del Sol,Home Appliances Ltd,Organic,0
+2023-02-01,Laptop Pro,Electronics,1200,1,Global Tech,Computers Corp,Google Ads,50
+2023-02-14,Desk Lamp,Home,45,3,Global Tech,Home Appliances Ltd,Social Media,10
+2023-03-01,Smartphone X,Electronics,800,2,Individual User,Mobile Systems,Email Marketing,20
+2023-03-05,Laptop Pro,Electronics,1200,1,Cafe del Sol,Computers Corp,Google Ads,50
+2023-03-20,Office Chair,Furniture,250,1,WorkSpace Ltd,Furniture Hub,Social Media,15
+2023-03-25,Laptop Pro,Electronics,1200,1,Global Tech,Computers Corp,Google Ads,50
+2023-04-01,Laptop Pro,Electronics,1200,1,Individual User,Computers Corp,Google Ads,50
+2023-04-10,Mouse Wireless,Electronics,25,5,Peripherals Inc,Peripherals Inc,Social Media,5
+2023-05-01,Smartphone X,Electronics,800,3,Mobile Systems,Mobile Systems,Email Marketing,20
+2023-05-20,Laptop Pro,Electronics,1200,1,Global Tech,Computers Corp,Google Ads,50
+2023-06-01,Coffee Maker,Home,85,2,Cafe del Sol,Home Appliances Ltd,Organic,0
+2023-06-15,Laptop Pro,Electronics,1200,1,Global Tech,Computers Corp,Google Ads,50
+2023-07-01,Smartphone X,Electronics,800,4,Mobile Systems,Mobile Systems,Email Marketing,20
+2023-07-20,Office Chair,Furniture,250,2,WorkSpace Ltd,Furniture Hub,Social Media,15
+2023-08-01,Laptop Pro,Electronics,1200,1,Global Tech,Computers Corp,Google Ads,50
+2023-08-15,Mouse Wireless,Electronics,25,3,Individual User,Peripherals Inc,Social Media,5
+2023-09-01,Smartphone X,Electronics,800,2,Mobile Systems,Mobile Systems,Email Marketing,20
+2023-09-20,Laptop Pro,Electronics,1200,1,Global Tech,Computers Corp,Google Ads,50
+2023-10-01,Coffee Maker,Home,85,1,Cafe del Sol,Home Appliances Ltd,Organic,0
+2023-10-15,Laptop Pro,Electronics,1200,1,Global Tech,Computers Corp,Google Ads,50
+2023-11-01,Smartphone X,Electronics,800,5,Individual User,Mobile Systems,Email Marketing,20
+2023-11-20,Office Chair,Furniture,250,3,WorkSpace Ltd,Furniture Hub,Social Media,15
+2023-12-01,Laptop Pro,Electronics,1200,2,Global Tech,Computers Corp,Google Ads,100
+2023-12-15,Mouse Wireless,Electronics,25,10,Individual User,Peripherals Inc,Social Media,20
+2023-12-24,Smartphone X,Electronics,800,6,Mobile Systems,Mobile Systems,Email Marketing,40
