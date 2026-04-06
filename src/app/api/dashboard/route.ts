@@ -154,6 +154,7 @@ export async function GET(req: Request) {
         users: usersCount,
         analysis,
         totalSales: totalComputedSales.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
+        totalSalesNumeric: totalComputedSales,
         avgTicket: avgTicket.toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
         predictions: predictions || null,
         aiWinnerProduct,
