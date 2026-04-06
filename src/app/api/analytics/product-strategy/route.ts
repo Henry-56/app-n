@@ -32,17 +32,43 @@ export async function POST(req: Request) {
         // 3. Identified Product Rows (Sort by highest match score and take hits)
         const productRows = scoredRows
             .filter(r => r.score >= Math.ceil(productKeywords.length * 0.5))
-            .sort((a, b) => b.score - a.score)
+            .sort((a, b) => {
+                // First sort by keyword match score
+                if (b.score !== a.score) return b.score - a.score;
+                
+                // Then sort by Sales (numeric)
+                const salesA = parseFloat(String(a.data.Sales || 0));
+                const salesB = parseFloat(String(b.data.Sales || 0));
+                if (salesB !== salesA) return salesB - salesA;
+
+                // Finally sort by MarketingSpend (numeric)
+                const spendA = parseFloat(String(a.data.MarketingSpend || 0));
+                const spendB = parseFloat(String(b.data.MarketingSpend || 0));
+                return spendB - spendA;
+            })
             .map(r => r.data);
 
         // 4. PRE-ANALYSIS: Extract Strategy Directly from Data (Fact-First)
-        // Find if any key in the first matched row contains "channel", "marketing", "canal", "redes", "estrategia"
         let excelStrategy: string | null = null;
         if (productRows.length > 0) {
             const row = productRows[0] as any;
-            const strategyKey = Object.keys(row).find(k => 
-                ["marketingchannel", "canal", "marketing", "estrategia", "social"].some(s => k.toLowerCase().includes(s))
+            
+            // Prioritize specific keywords and exclude "spend/cost" related ones
+            const priorityKeys = ["marketingchannel", "canal", "channel", "social", "estrategia"];
+            let strategyKey = Object.keys(row).find(k => 
+                priorityKeys.some(p => k.toLowerCase() === p)
             );
+
+            // If no exact match, search for inclusions but exclude spend/cost
+            if (!strategyKey) {
+                strategyKey = Object.keys(row).find(k => {
+                    const lowKey = k.toLowerCase();
+                    const isCandidate = ["canal", "channel", "marketing", "social", "estrategia"].some(s => lowKey.includes(s));
+                    const isSpend = ["spend", "cost", "gasto", "gasto", "monto", "$"].some(s => lowKey.includes(s));
+                    return isCandidate && !isSpend;
+                });
+            }
+
             if (strategyKey && row[strategyKey]) {
                 excelStrategy = String(row[strategyKey]);
             }

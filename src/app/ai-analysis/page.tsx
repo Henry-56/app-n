@@ -143,7 +143,20 @@ export default function AIAnalysisPage() {
            <p className="text-slate-500 mt-2 max-w-md mx-auto font-medium">Por favor genera un nuevo análisis desde el Dashboard para activar las sugerencias de la IA.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Card: Winning Synergy (NEW) */}
+          <StrategyCard 
+            title="Sinergia Ganadora"
+            icon={<Zap className="text-amber-500 fill-amber-500" />}
+            topic="COMBO ESTRATÉGICO"
+            badge="MAX ROI"
+            content={`Hemos detectado que "${consultation?.product?.winningProduct}" tiene su mejor rendimiento histórico utilizando "${consultation?.product?.bestChannel || 'el canal principal'}".`}
+            metricLabel="Combinación"
+            metricValue={`${consultation?.product?.winningProduct} + ${consultation?.product?.bestChannel || '...'}`}
+            strategy="Sincroniza para ver el detalle exacto de conversión."
+            loading={loading}
+          />
+
           {/* Card: Marketing */}
           <StrategyCard 
             title="Sugerencia de Marketing"
@@ -254,56 +267,16 @@ export default function AIAnalysisPage() {
                     <p className="text-slate-400 font-medium text-lg italic leading-relaxed">"{productStrategy.reason}"</p>
                 </div>
 
-                <StrategyInfoCard 
+                 <StrategyInfoCard 
                     title="Canal Recomendado"
                     icon={<Target className="w-6 h-6 text-indigo-600" />}
                     val={productStrategy.channel}
                     bg="bg-indigo-50"
                 />
-                <StrategyInfoCard 
-                    title="Audiencia Objetivo"
-                    icon={<Users className="w-6 h-6 text-emerald-600" />}
-                    val={productStrategy.targetAudience}
-                    bg="bg-emerald-50"
-                />
-                
-                <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-200 md:col-span-2 flex gap-6 items-start">
-                    <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center flex-shrink-0">
-                        <MessageSquare className="w-6 h-6 text-slate-900" />
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Mensaje Sugerido (Copy)</p>
-                        <p className="text-2xl font-black text-slate-900 line-clamp-2 italic">"{productStrategy.messaging}"</p>
-                    </div>
-                </div>
-
-                <div className="bg-indigo-600 p-10 rounded-[3rem] text-white md:col-span-2 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group">
-                    <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
-                            <Zap className="w-3 h-3 text-amber-400 fill-amber-400" /> Paso a seguir
-                        </div>
-                        <h4 className="text-3xl font-black mb-2">Acción Inmediata</h4>
-                        <p className="text-indigo-100 font-medium text-lg">{productStrategy.action}</p>
-                    </div>
-                    <button className="px-10 py-4 bg-white text-indigo-600 font-black rounded-2xl hover:scale-105 transition-all shadow-xl active:scale-95 flex items-center gap-3">
-                        Implementar ahora <ArrowRight className="w-5 h-5" />
-                    </button>
-                </div>
             </div>
           )}
       </div>
 
-      {consultation && (
-        <div className="bg-slate-900 p-12 rounded-[3.5rem] text-white overflow-hidden relative group shadow-2xl shadow-slate-300">
-           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 blur-[100px] -mr-32 -mt-32 group-hover:bg-indigo-600/40 transition-all duration-700"></div>
-           <h3 className="text-3xl font-black mb-4 relative z-10">¿Deseas profundizar en este análisis?</h3>
-           <p className="text-slate-400 max-w-xl font-medium text-lg leading-relaxed relative z-10">Nuestro motor puede generar un reporte ejecutivo personalizado con proyecciones a 12 meses y planes de acción específicos para tu industria.</p>
-           <button className="mt-8 px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl transition-all flex items-center gap-3 relative z-10 active:scale-95 shadow-xl shadow-indigo-500/30">
-              Generar Reporte Premium
-              <ArrowRight className="w-5 h-5 font-bold" />
-           </button>
-        </div>
-      )}
     </div>
   );
 }

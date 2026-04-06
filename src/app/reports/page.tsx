@@ -126,60 +126,175 @@ export default function ReportsPage() {
         doc.setTextColor(71, 85, 105);
         doc.text(doc.splitTextToSize(strategic.supplier?.suggestion || "Análisis en curso.", 80), 18, 154);
 
-        doc.setFillColor(254, 242, 242); // Customer
-        doc.roundedRect(108, 140, 88, 35, 4, 4, 'F');
-        doc.setTextColor(185, 28, 28);
-        doc.setFontSize(10);
-        doc.text("4. Clientes & Fidelización", 112, 147);
-        doc.setFontSize(8);
-        doc.setTextColor(71, 85, 105);
-        doc.text(doc.splitTextToSize(strategic.customer?.suggestion || "Análisis en curso.", 80), 112, 154);
+         doc.setFillColor(254, 242, 242); // Customer
+         doc.roundedRect(108, 140, 88, 30, 4, 4, 'F');
+         doc.setTextColor(185, 28, 28);
+         doc.setFontSize(10);
+         doc.text("4. Clientes & Fidelización", 112, 147);
+         doc.setFontSize(8);
+         doc.setTextColor(71, 85, 105);
+         doc.text(doc.splitTextToSize(strategic.customer?.suggestion || "Análisis en curso.", 80), 112, 154);
+ 
+         // --- SECCIÓN 3: SINERGIA GANADORA (PRODUCT + CHANNEL) ---
+         if (strategic.product?.winningProduct && strategic.product?.bestChannel) {
+             doc.setFillColor(30, 41, 59); // Slate 800
+             doc.roundedRect(14, 175, 182, 35, 6, 6, 'F');
+             
+             doc.setTextColor(255, 255, 255);
+             doc.setFontSize(12);
+             doc.text("Sinergia Ganadora (Target #1)", 20, 184);
+             
+             doc.setFontSize(9);
+             doc.setTextColor(203, 213, 225); // Slate 300
+             doc.text(`PRODUCTO: ${strategic.product.winningProduct}`, 20, 192);
+             doc.text(`CANAL: ${strategic.product.bestChannel}`, 20, 197);
+             
+             doc.setFontSize(9);
+             doc.setTextColor(255, 255, 255);
+             const synergyTxt = `Combo de alto rendimiento detectado. El ROI se maximiza impulsando este producto vía ${strategic.product.bestChannel}.`;
+             doc.text(doc.splitTextToSize(synergyTxt, 170), 20, 204);
+         }
 
-        // --- SECCIÓN 3: TABLAS ---
-        doc.setFontSize(16);
-        doc.setTextColor(15, 23, 42);
-        doc.text("Histórico de Ventas y Proyecciones", 14, 190);
-        
-        const trendRows = (charts.trend || []).slice(-10).map((t: any) => [
-            t.name, 
-            t.salesReal ? `$${t.salesReal}` : "Proyección", 
-            t.salesProjected ? `$${t.salesProjected}` : "-"
-        ]);
+         // New Page for Charts
+         doc.addPage();
+         
+         // --- SECCIÓN 4: RENDIMIENTO VISUAL (DASHBOARD-STYLING) ---
+         doc.setFontSize(18);
+         doc.setTextColor(15, 23, 42);
+         doc.text("Análisis de Rendimiento Visual", 14, 20);
+         
+         // 4.1 Categorías (Bars) - High Fidelity
+         doc.setFontSize(14);
+         doc.setTextColor(79, 70, 229); // Indigo 600
+         doc.text("Distribución por Producto (Top 5)", 14, 35);
+         
+         const topCats = (charts.categories || []).slice(0, 5);
+         let barY = 55;
+         const maxVal = Math.max(...topCats.map((c: any) => Number(c.value)), 1);
+         
+         // Draw Chart Area
+         doc.setDrawColor(241, 245, 249);
+         doc.setLineWidth(0.1);
+         for(let i=0; i<=4; i++) {
+            const gx = 45 + (i * 35);
+            doc.line(gx, 45, gx, 115); // Light vertical grid
+         }
 
-        autoTable(doc, {
-          startY: 195,
-          head: [['Periodo / Fecha', 'Ventas Reales', 'Venta IA (Proy.)']],
-          body: trendRows.length > 0 ? trendRows : [['Sin datos', '-', '-']],
-          styles: { fontSize: 8 },
-          headStyles: { fillColor: [15, 23, 42] }
-        });
+         topCats.forEach((c: any) => {
+             const val = Number(c.value);
+             const barWidth = (val / maxVal) * 140;
+             
+             // Bar Label
+             doc.setFontSize(7);
+             doc.setTextColor(100);
+             doc.text(doc.splitTextToSize(c.name, 28), 14, barY + 1);
+             
+             // Bar Background
+             doc.setFillColor(248, 250, 252);
+             doc.roundedRect(45, barY - 4, 140, 7, 2, 2, 'F'); 
+             
+             // Main Bar (Indigo)
+             doc.setFillColor(79, 70, 229);
+             doc.roundedRect(45, barY - 4, barWidth, 7, 2, 2, 'F');
+             
+             // Value
+             doc.setFontSize(8);
+             doc.setTextColor(15, 23, 42);
+             doc.text(`$${val.toLocaleString()}`, 190, barY + 1, { align: 'right' });
+             
+             barY += 14;
+         });
 
-        // Use autoTable.previous.finalY after the first table
-        let nextY = (doc as any).lastAutoTable?.finalY || 240;
+         // 4.2 Tendencia (Trend Line Visualization - Dashboard Style)
+         doc.setFontSize(14);
+         doc.setTextColor(16, 185, 129); // Emerald 600
+         doc.text("Tendencia de Crecimiento & Predictivo", 14, barY + 20);
+         
+         const trendData = (charts.trend || []).slice(-12);
+         if (trendData.length > 0) {
+            const chartX = 25; // Shift right for Y-axis labels
+            const chartY = barY + 85; 
+            const chartW = 171; // Adjust width for labels
+            const chartH = 45;
+            
+            // Background Card look
+            doc.setFillColor(255, 255, 255);
+            doc.setDrawColor(226, 232, 240);
+            doc.roundedRect(14, barY + 28, 182, chartH + 25, 4, 4, 'D');
 
-        doc.setFontSize(16);
-        doc.text("Distribución de Ingresos por Producto", 14, nextY + 15);
-        
-        const catRows = (charts.categories || []).slice(0, 5).map((c: any) => [
-            c.name, 
-            `$${c.value}`,
-            `${((c.value / (stats.totalSalesNumeric || 1)) * 100).toFixed(1)}%`
-        ]);
+            // Legend
+            doc.setFontSize(6);
+            doc.setTextColor(100);
+            // Real Legend
+            doc.setDrawColor(16, 185, 129);
+            doc.setLineWidth(0.5);
+            doc.line(160, barY + 35, 165, barY + 35);
+            doc.text("Histórico", 167, barY + 36);
+            // Proj Legend
+            doc.setLineDash([1, 1], 0);
+            doc.line(160, barY + 39, 165, barY + 39);
+            doc.text("IA Proyección", 167, barY + 40);
+            doc.setLineDash([], 0); // Reset dash
 
-        autoTable(doc, {
-            startY: nextY + 20,
-            head: [['Producto / Categoría', 'Venta Total', '% Participación']],
-            body: catRows.length > 0 ? catRows : [['Sin datos', '-', '-']],
-            styles: { fontSize: 8 },
-            headStyles: { fillColor: [79, 70, 229] }
-        });
+            const maxTrendRaw = Math.max(...trendData.map((t: any) => Math.max(Number(t.salesReal || 0), Number(t.salesProjected || 0))), 1);
+            const maxTrendScale = Math.ceil(maxTrendRaw / 500) * 500; // Round up for scale
 
-        doc.save(`${name.replace(/\.[^/.]+$/, "")}_BI_Report.pdf`);
-    } catch (e: any) {
-        console.error("PDF Fail:", e);
-        alert(`Error al generar el PDF: ${e.message}`);
-    }
-  };
+            // Grid Lines (Horizontal) and Y-Axis Labels
+            doc.setDrawColor(241, 245, 249);
+            doc.setLineWidth(0.1);
+            doc.setFontSize(6);
+            doc.setTextColor(148, 163, 184);
+
+            for(let j=0; j<=4; j++) {
+                const gy = chartY - (j * (chartH / 4));
+                const val = (maxTrendScale / 4) * j;
+                doc.line(chartX, gy, chartX + chartW, gy);
+                doc.text(`$${val}`, chartX - 2, gy + 1, { align: 'right' });
+            }
+            
+            let prevPoint: any = null;
+            
+            trendData.forEach((t: any, i: number) => {
+                const x = chartX + (i * (chartW / (trendData.length - 1)));
+                const val = Number(t.salesReal || t.salesProjected);
+                const y = chartY - ((val / maxTrendScale) * chartH);
+                const isProjected = !t.salesReal && t.salesProjected;
+                
+                // Set Dash if projected
+                if (isProjected) {
+                    doc.setLineDash([2, 1], 0);
+                } else {
+                    doc.setLineDash([], 0);
+                }
+
+                doc.setDrawColor(16, 185, 129);
+                doc.setLineWidth(1.2);
+                if (prevPoint) doc.line(prevPoint.x, prevPoint.y, x, y);
+                
+                // Data Point
+                doc.setFillColor(16, 185, 129);
+                doc.circle(x, y, 1, 'F');
+                prevPoint = { x, y };
+
+                // Date Label
+                doc.setLineDash([], 0); // Reset for text
+                doc.setFontSize(5);
+                doc.setTextColor(100);
+                const dateLbl = t.name.includes('-') ? t.name.split('-').pop() : t.name;
+                // Only show labels every 2 points if crowded
+                if (trendData.length <= 6 || i % 2 === 0 || i === trendData.length - 1) {
+                    doc.text(dateLbl, x, chartY + 6, { align: 'center' });
+                }
+            });
+            doc.setLineDash([], 0); // Final reset
+         }
+
+         doc.save(`${name.replace(/\.[^/.]+$/, "")}_Report_Predictivo.pdf`);
+     } catch (e: any) {
+         console.error("PDF Fail:", e);
+         alert(`Error al generar el PDF: ${e.message}`);
+     }
+   };
 
   const exportToExcel = (reportData: any, name: string) => {
     const wsData = [

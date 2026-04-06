@@ -58,16 +58,26 @@ export class GeminiAIInsightService implements AIInsightService {
     });
     const topCustomer: any = Object.values(customerMap).sort((a: any, b: any) => b.ltv - a.ltv)[0] || { name: "Desconocido" };
 
+    // 5. Winning Synergy (Best channel for the Top Product)
+    const synergyMap: any = {};
+    data.filter(r => (r.Product || r.product) === topProduct.name).forEach(r => {
+        const c = r.MarketingChannel || r.marketing_channel || "Orgánico";
+        if (!synergyMap[c]) synergyMap[c] = { name: c, sales: 0 };
+        synergyMap[c].sales += Number(r.Sales || 0);
+    });
+    const bestChannelForProduct = Object.values(synergyMap).sort((a: any, b: any) => b.sales - a.sales)[0] || topChannel;
+
     return {
         marketing: { 
-            suggestion: `El canal "${topChannel.name}" lidera la generación de ingresos. Recomendamos intensificar la pauta publicitaria en este segmento para maximizar el ROI.`, 
+            suggestion: `El canal "${topChannel.name}" lidera la generación de ingresos global. Recomendamos intensificar la pauta publicitaria en este segmento para maximizar el ROI.`, 
             priority: "ALTA", 
             targetChannel: topChannel.name 
         },
         product: { 
-            suggestion: `"${topProduct.name}" es el producto estrella. Sugerimos crear paquetes (bundles) o programas de fidelización específicos para este artículo.`, 
+            suggestion: `"${topProduct.name}" es tu producto estrella y funciona mejor a través de "${bestChannelForProduct.name}". Sugerimos potenciar esta combinación ganadora.`, 
             winningProduct: topProduct.name, 
-            reason: `Mayor contribución porcentual al volumen total de ventas.` 
+            bestChannel: bestChannelForProduct.name,
+            reason: `Detección de Sinergia: Este producto genera su mayor volumen de ventas vía ${bestChannelForProduct.name}.` 
         },
         supplier: { 
             suggestion: `"${topSupplier.name}" es el proveedor con mayor frecuencia operativa. Ideal para negociar descuentos por pronto pago o volumen.`, 
@@ -146,7 +156,8 @@ export class GeminiAIInsightService implements AIInsightService {
   }
 
   async generateStrategicConsultation(data: any): Promise<any> {
-    const prompt = `Analiza este dataset: ${JSON.stringify(data.slice(0, 50))}. Responde en JSON con marketing, product, supplier, customer.`;
+    const prompt = `Analiza este dataset: ${JSON.stringify(data.slice(0, 50))}. Responde en JSON con marketing, product, supplier, customer.
+    IMPORTANTE: En el objeto 'product', incluye un campo 'bestChannel' indicando qué canal de marketing funciona mejor para ese producto específico según los datos.`;
     try {
       console.log("Gemini: Intentando análisis de IA...");
       const result = await this.model.generateContent(prompt);
