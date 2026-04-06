@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 
 interface Report {
@@ -146,7 +146,7 @@ export default function ReportsPage() {
             t.salesProjected ? `$${t.salesProjected}` : "-"
         ]);
 
-        doc.autoTable({
+        autoTable(doc, {
           startY: 195,
           head: [['Periodo / Fecha', 'Ventas Reales', 'Venta IA (Proy.)']],
           body: trendRows.length > 0 ? trendRows : [['Sin datos', '-', '-']],
@@ -166,7 +166,7 @@ export default function ReportsPage() {
             `${((c.value / (stats.totalSalesNumeric || 1)) * 100).toFixed(1)}%`
         ]);
 
-        doc.autoTable({
+        autoTable(doc, {
             startY: nextY + 20,
             head: [['Producto / Categoría', 'Venta Total', '% Participación']],
             body: catRows.length > 0 ? catRows : [['Sin datos', '-', '-']],
