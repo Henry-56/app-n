@@ -19,7 +19,7 @@ export default function ActiveDatasetStatus() {
             const data = await res.json();
             setDatasetName(data.activeDatasetName || "Dataset General");
             lastId.current = id;
-        } catch (e) {
+        } catch (e: any) {
             setDatasetName("Sin selección");
         }
     };
@@ -43,3 +43,4 @@ export default function ActiveDatasetStatus() {
     </div>
   );
 }
+

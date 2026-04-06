@@ -27,7 +27,8 @@ export async function GET(req: NextRequest) {
             activeDatasetId: latestDataset?.id,
             activeDatasetName: latestDataset?.name
         });
-    } catch (e) {
+    } catch (e: any) {
         return NextResponse.json({ error: "Failed to fetch active dataset" }, { status: 500 });
     }
 }
+

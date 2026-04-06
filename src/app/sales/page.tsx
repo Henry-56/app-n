@@ -21,7 +21,7 @@ export default function SalesPage() {
         }
         
         setTransactions(data.recentTransactions || []);
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
       } finally {
         setLoading(false);
@@ -100,3 +100,4 @@ export default function SalesPage() {
     </div>
   );
 }
+

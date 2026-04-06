@@ -37,7 +37,7 @@ export default function SuppliersPage() {
         });
         
         setSuppliers(Object.values(supplierMap).sort((a,b) => b.totalVolume - a.totalVolume));
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
       } finally {
         setLoading(false);
@@ -129,3 +129,4 @@ function StatsCard({ title, value, desc, icon }: any) {
         </div>
     );
 }
+

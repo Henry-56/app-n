@@ -36,7 +36,7 @@ export default function CustomersPage() {
         });
         
         setCustomers(Object.values(customerMap).sort((a,b) => b.totalRevenue - a.totalRevenue));
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
       } finally {
         setLoading(false);
@@ -128,3 +128,4 @@ function StatsCard({ title, value, desc, icon }: any) {
         </div>
     );
 }
+

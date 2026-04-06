@@ -38,7 +38,7 @@ export default function ReportsPage() {
       const res = await fetch("/api/reports");
       const data = await res.json();
       setReports(data);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Error fetching reports");
     } finally {
       setLoading(false);
@@ -144,7 +144,7 @@ export default function ReportsPage() {
             })
         });
         fetchReports();
-    } catch (e) {
+    } catch (e: any) {
         alert("Error al exportar");
     } finally {
         setExporting(null);
@@ -256,3 +256,4 @@ export default function ReportsPage() {
     </div>
   );
 }
+

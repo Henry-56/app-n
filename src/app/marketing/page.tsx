@@ -47,7 +47,7 @@ export default function MarketingPage() {
         });
         
         setChannels(Object.values(channelMap).sort((a,b) => b.totalRevenue - a.totalRevenue));
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
       } finally {
         setLoading(false);
@@ -142,3 +142,4 @@ function StatsCard({ title, value, desc, icon }: any) {
         </div>
     );
 }
+

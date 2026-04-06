@@ -37,7 +37,7 @@ export default function ProductsPage() {
         });
         
         setProducts(Object.values(prodMap).sort((a,b) => b.totalSales - a.totalSales));
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
       } finally {
         setLoading(false);
@@ -129,3 +129,4 @@ function StatsCard({ title, value, desc, icon }: any) {
         </div>
     );
 }
+

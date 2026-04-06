@@ -56,7 +56,7 @@ export default function Dashboard() {
             }); // Automatic sync, UI will update on next regular flow or manual navigation
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Error fetching dashboard data");
     } finally {
       setLoading(false);
@@ -437,3 +437,4 @@ function StrategicPill({ title, value, icon, color }: any) {
         </div>
     );
 }
+

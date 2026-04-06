@@ -41,7 +41,7 @@ export default function AIAnalysisPage() {
           setConsultation(foundConsultation || null);
           setLoading(false);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       setLoading(false);
     }
@@ -62,7 +62,7 @@ export default function AIAnalysisPage() {
         const res = await fetch(`/api/dashboard?datasetId=${id}`);
         const data = await res.json();
         setConsultation(data.stats.analysis?.findings?.strategicConsultation || null);
-    } catch (e) {
+    } catch (e: any) {
         console.error(e);
     } finally {
         setSyncing(false);
@@ -217,3 +217,4 @@ function StrategyCard({ title, icon, topic, badge, content, metricLabel, metricV
         </div>
     );
 }
+

@@ -45,7 +45,7 @@ export default function DatasetsPage() {
         console.error("Expected array from /api/datasets but got:", data);
         setDatasets([]);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Error fetching datasets:", e);
       setDatasets([]);
     } finally {
@@ -63,7 +63,7 @@ export default function DatasetsPage() {
       const res = await fetch(`/api/datasets/${id}`);
       const data = await res.json();
       setPreviewDataset(data);
-    } catch (e) {
+    } catch (e: any) {
       alert("Error al cargar la previsualización");
     } finally {
       setPreviewLoading(false);
@@ -105,7 +105,7 @@ export default function DatasetsPage() {
       if (res.ok) {
         setDatasets(datasets.filter(d => d.id !== id));
       }
-    } catch (e) {
+    } catch (e: any) {
       alert("Error al eliminar");
     }
   };
@@ -125,7 +125,7 @@ export default function DatasetsPage() {
         const err = await res.json();
         alert(err.error);
       }
-    } catch (e) {
+    } catch (e: any) {
       alert("Error al iniciar el análisis");
     } finally {
       setAnalyzingId(null);
@@ -349,3 +349,4 @@ export default function DatasetsPage() {
     </div>
   );
 }
+

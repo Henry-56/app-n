@@ -20,7 +20,7 @@ export default function ModuleHeader({ title, icon, description }: ModuleHeaderP
             const res = await fetch(id ? `/api/datasets/active?datasetId=${id}` : "/api/datasets/active");
             const data = await res.json();
             setDatasetName(data.activeDatasetName || "Dataset General");
-        } catch (e) {
+        } catch (e: any) {
             setDatasetName("Dataset Default");
         }
     };
@@ -60,3 +60,4 @@ export default function ModuleHeader({ title, icon, description }: ModuleHeaderP
     </div>
   );
 }
+
