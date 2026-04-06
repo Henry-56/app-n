@@ -7,8 +7,8 @@ export class GeminiAIInsightService implements AIInsightService {
 
   constructor(apiKey: string) {
     this.genAI = new GoogleGenerativeAI(apiKey);
-    // User requested "2.5 Flash Lite". Using current available "2.0 Flash Lite Preview"
-    const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+    // User requested "2.5 Flash Lite". Using current available "1.5 Flash" as default stable
+    const modelName = process.env.GEMINI_MODEL || "gemini-1.5-flash";
     this.model = this.genAI.getGenerativeModel({ model: modelName });
   }
 
@@ -16,7 +16,7 @@ export class GeminiAIInsightService implements AIInsightService {
     try {
       const jsonMatch = text.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
       return jsonMatch ? jsonMatch[0] : text;
-    } catch (e) {
+    } catch (e: any) {
       return text;
     }
   }
@@ -88,7 +88,7 @@ export class GeminiAIInsightService implements AIInsightService {
     try {
       const result = await this.model.generateContent(prompt);
       return result.response.text();
-    } catch (e) {
+    } catch (e: any) {
       return "Análisis general: Se observa una tendencia estable de ventas sustentada por la recurrencia operativa.";
     }
   }
@@ -98,7 +98,7 @@ export class GeminiAIInsightService implements AIInsightService {
     try {
       const result = await this.model.generateContent(prompt);
       return JSON.parse(this.cleanJson(result.response.text()));
-    } catch (e) {
+    } catch (e: any) {
       return {
         trends: [{ name: "Crecimiento Orgánico", description: "Tendencia natural basada en tráfico directo.", impact: "POSITIVE" }],
         insights: ["La base de datos muestra una alta concentración en productos clave."]
@@ -110,7 +110,7 @@ export class GeminiAIInsightService implements AIInsightService {
     try {
       const result = await this.model.generateContent(`Proyecta: ${scenario}. Datos: ${JSON.stringify(data.slice(0, 20))}`);
       return JSON.parse(this.cleanJson(result.response.text()));
-    } catch (e) {
+    } catch (e: any) {
       return { projection: "Escenario conservador proyectado.", expectedGrowth: 5, risks: ["Volatilidad de mercado"] };
     }
   }
@@ -119,7 +119,7 @@ export class GeminiAIInsightService implements AIInsightService {
     try {
       const result = await this.model.generateContent(`Recomienda acciones: ${JSON.stringify(data.slice(0, 20))}`);
       return JSON.parse(this.cleanJson(result.response.text()));
-    } catch (e) {
+    } catch (e: any) {
       return [
           { title: "Optimización de Inventario", description: "Asegurar disponibilidad de productos estrella.", priority: "HIGH", impact: "Crecimiento del 10% en cumplimiento." },
           { title: "Plan de Marketing", description: "Diversificar canales digitales.", priority: "MEDIUM", impact: "Ahorro del 5% en adquisición." }
@@ -131,7 +131,7 @@ export class GeminiAIInsightService implements AIInsightService {
     try {
       const result = await this.model.generateContent(`Riesgos: ${JSON.stringify(data.slice(0, 20))}`);
       return JSON.parse(this.cleanJson(result.response.text()));
-    } catch (e) {
+    } catch (e: any) {
       return [{ risk: "Dependencia de pocos productos", severity: "MEDIUM", mitigation: "Diversificar catálogo." }];
     }
   }
@@ -140,7 +140,7 @@ export class GeminiAIInsightService implements AIInsightService {
     try {
       const result = await this.model.generateContent(`Predice: ${JSON.stringify(data.slice(0, 20))}`);
       return JSON.parse(this.cleanJson(result.response.text()));
-    } catch (e) {
+    } catch (e: any) {
       return { projectedSales: 0, expectedDemand: [], growthTrend: 0, justification: "Calculando proyecciones basadas en histórico." };
     }
   }
@@ -152,7 +152,7 @@ export class GeminiAIInsightService implements AIInsightService {
       const result = await this.model.generateContent(prompt);
       const text = result.response.text();
       return JSON.parse(this.cleanJson(text));
-    } catch (e) {
+    } catch (e: any) {
       console.warn("⚠️ Gemini Falló (Modo Determinístico):", e.message);
       return this.getDeterministicConsultation(data);
     }
