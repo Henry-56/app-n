@@ -9,7 +9,13 @@ import {
   Truck, 
   Megaphone, 
   ArrowRight,
-  RefreshCw
+  RefreshCw,
+  Search,
+  Sparkles,
+  Target,
+  MessageSquare,
+  Zap,
+  Loader2
 } from "lucide-react";
 import ModuleHeader from "@/components/ModuleHeader";
 
@@ -18,6 +24,12 @@ export default function AIAnalysisPage() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const syncAttempted = useRef(false);
+
+  // New States for Product Strategy
+  const [products, setProducts] = useState<string[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [productStrategy, setProductStrategy] = useState<any>(null);
+  const [loadingStrategy, setLoadingStrategy] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -32,6 +44,11 @@ export default function AIAnalysisPage() {
           localStorage.setItem("selectedDatasetId", data.activeDatasetId);
       }
       
+      // Extract products for the new dropdown
+      if (data.charts?.categories) {
+          setProducts(data.charts.categories.map((c: any) => c.name));
+      }
+
       const foundConsultation = data.stats.analysis?.findings?.strategicConsultation;
       if (!foundConsultation && data.activeDatasetId && !syncAttempted.current) {
           console.log("No analysis found, auto-syncing once...");
@@ -75,8 +92,27 @@ export default function AIAnalysisPage() {
       if (id) handleSyncInternal(id);
   };
 
+  const handleProductStrategy = async () => {
+    if (!selectedProduct) return;
+    setLoadingStrategy(true);
+    setProductStrategy(null);
+    try {
+        const id = localStorage.getItem("selectedDatasetId");
+        const res = await fetch("/api/analytics/product-strategy", {
+            method: "POST",
+            body: JSON.stringify({ productName: selectedProduct, datasetId: id })
+        });
+        const data = await res.json();
+        setProductStrategy(data);
+    } catch (e: any) {
+        console.error(e);
+    } finally {
+        setLoadingStrategy(false);
+    }
+  };
+
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-20">
+    <div className="max-w-7xl mx-auto space-y-12 pb-32 px-4 md:px-0">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="flex-1">
             <ModuleHeader 
@@ -158,19 +194,132 @@ export default function AIAnalysisPage() {
         </div>
       )}
 
+      {/* --- SECCIÓN NUEVA: CONSULTORÍA POR PRODUCTO --- */}
+      <div className="pt-20 border-t border-slate-200">
+          <div className="mb-10 flex items-center gap-4">
+              <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                  <Sparkles className="w-6 h-6" />
+              </div>
+              <div>
+                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">Nueva: Consultoría por Producto</h3>
+                  <p className="text-slate-500 font-medium">Selecciona un artículo en particular para recibir una estrategia de marketing a medida.</p>
+              </div>
+          </div>
+
+          <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-slate-100 mb-10">
+              <div className="relative w-full">
+                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none" />
+                  <select 
+                      value={selectedProduct}
+                      onChange={(e) => {
+                          const newProduct = e.target.value;
+                          setSelectedProduct(newProduct);
+                          // Automatic Trigger
+                          if (newProduct) {
+                              setLoadingStrategy(true);
+                              setProductStrategy(null);
+                              const id = localStorage.getItem("selectedDatasetId");
+                              fetch("/api/analytics/product-strategy", {
+                                  method: "POST",
+                                  body: JSON.stringify({ productName: newProduct, datasetId: id })
+                              }).then(res => res.json()).then(data => {
+                                  setProductStrategy(data);
+                                  setLoadingStrategy(false);
+                              }).catch(err => {
+                                  console.error(err);
+                                  setLoadingStrategy(false);
+                              });
+                          }
+                      }}
+                      className="w-full pl-14 pr-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-700 appearance-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer"
+                  >
+                      <option value="">Selecciona un producto del catálogo...</option>
+                      {products.map(p => (
+                          <option key={p} value={p}>{p}</option>
+                      ))}
+                  </select>
+                  {loadingStrategy && (
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2">
+                        <Loader2 className="w-5 h-5 text-indigo-600 animate-spin" />
+                    </div>
+                  )}
+              </div>
+          </div>
+
+          {productStrategy && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                <div className="bg-slate-900 p-10 rounded-[3rem] text-white md:col-span-2 relative overflow-hidden group">
+                    <Lightbulb className="w-14 h-14 text-amber-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
+                    <h4 className="text-2xl font-black mb-2">Visión Estratégica</h4>
+                    <p className="text-slate-400 font-medium text-lg italic leading-relaxed">"{productStrategy.reason}"</p>
+                </div>
+
+                <StrategyInfoCard 
+                    title="Canal Recomendado"
+                    icon={<Target className="w-6 h-6 text-indigo-600" />}
+                    val={productStrategy.channel}
+                    bg="bg-indigo-50"
+                />
+                <StrategyInfoCard 
+                    title="Audiencia Objetivo"
+                    icon={<Users className="w-6 h-6 text-emerald-600" />}
+                    val={productStrategy.targetAudience}
+                    bg="bg-emerald-50"
+                />
+                
+                <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-200 md:col-span-2 flex gap-6 items-start">
+                    <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center flex-shrink-0">
+                        <MessageSquare className="w-6 h-6 text-slate-900" />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Mensaje Sugerido (Copy)</p>
+                        <p className="text-2xl font-black text-slate-900 line-clamp-2 italic">"{productStrategy.messaging}"</p>
+                    </div>
+                </div>
+
+                <div className="bg-indigo-600 p-10 rounded-[3rem] text-white md:col-span-2 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 group">
+                    <div>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                            <Zap className="w-3 h-3 text-amber-400 fill-amber-400" /> Paso a seguir
+                        </div>
+                        <h4 className="text-3xl font-black mb-2">Acción Inmediata</h4>
+                        <p className="text-indigo-100 font-medium text-lg">{productStrategy.action}</p>
+                    </div>
+                    <button className="px-10 py-4 bg-white text-indigo-600 font-black rounded-2xl hover:scale-105 transition-all shadow-xl active:scale-95 flex items-center gap-3">
+                        Implementar ahora <ArrowRight className="w-5 h-5" />
+                    </button>
+                </div>
+            </div>
+          )}
+      </div>
+
       {consultation && (
-        <div className="bg-slate-900 p-12 rounded-[3rem] text-white overflow-hidden relative group">
+        <div className="bg-slate-900 p-12 rounded-[3.5rem] text-white overflow-hidden relative group shadow-2xl shadow-slate-300">
            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 blur-[100px] -mr-32 -mt-32 group-hover:bg-indigo-600/40 transition-all duration-700"></div>
-           <h3 className="text-2xl font-black mb-4 relative z-10">¿Deseas profundizar en este análisis?</h3>
-           <p className="text-slate-400 max-w-xl font-medium relative z-10">Nuestro motor puede generar un reporte ejecutivo personalizado con proyecciones a 12 meses y planes de acción específicos para tu industria.</p>
-           <button className="mt-8 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl transition-all flex items-center gap-3 relative z-10 active:scale-95 shadow-xl shadow-indigo-500/20">
+           <h3 className="text-3xl font-black mb-4 relative z-10">¿Deseas profundizar en este análisis?</h3>
+           <p className="text-slate-400 max-w-xl font-medium text-lg leading-relaxed relative z-10">Nuestro motor puede generar un reporte ejecutivo personalizado con proyecciones a 12 meses y planes de acción específicos para tu industria.</p>
+           <button className="mt-8 px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl transition-all flex items-center gap-3 relative z-10 active:scale-95 shadow-xl shadow-indigo-500/30">
               Generar Reporte Premium
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5 font-bold" />
            </button>
         </div>
       )}
     </div>
   );
+}
+
+function StrategyInfoCard({ title, icon, val, bg }: any) {
+    return (
+        <div className={`${bg} p-8 rounded-[2.5rem] border border-white shadow-sm flex flex-col justify-between`}>
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                {icon}
+            </div>
+            <div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{title}</p>
+                <p className="text-2xl font-black text-slate-900 leading-tight">{val}</p>
+            </div>
+        </div>
+    );
 }
 
 function StrategyCard({ title, icon, topic, badge, content, metricLabel, metricValue, reason, impact, strategy, loading }: any) {

@@ -157,4 +157,37 @@ export class GeminiAIInsightService implements AIInsightService {
       return this.getDeterministicConsultation(data);
     }
   }
+
+  async generateProductMarketingStrategy(productName: string, data: any[], hint?: string | null): Promise<any> {
+    const prompt = `Actúa como un experto analista de negocios Senior. Analiza el producto "${productName}" basándote en estos datos REALES del Excel del cliente: ${JSON.stringify(data)}. 
+    
+    ${hint ? `NOTA IMPORTANTE: Los datos sugieren explícitamente el uso de "${hint}". Prioriza este canal.` : ""}
+
+    INSTRUCCIONES CRÍTICAS DE COHERENCIA:
+    1. Revisa CADA columna de los datos proporcionados. 
+    2. Si en alguna fila ves palabras como "Pinterest", "Instagram", "Facebook", "TikTok" o cualquier red social, esa DEBE ser tu recomendación principal para el campo "channel".
+    3. Si el Excel dice "Pinterest" para este producto, responde con "Pinterest" sin inventar otros canales.
+    4. Responde ÚNICAMENTE en JSON con esta estructura:
+    {
+      "channel": "El canal exacto detectado en el Excel (ej. Pinterest)",
+      "targetAudience": "Público para este producto",
+      "messaging": "Gancho comercial",
+      "action": "Acción inmediata",
+      "reason": "Referencia directa a lo encontrado en los datos"
+    }`;
+
+    try {
+      const result = await this.model.generateContent(prompt);
+      const text = result.response.text();
+      return JSON.parse(this.cleanJson(text));
+    } catch (e: any) {
+      return {
+        channel: hint || "Canal Digital (Revisar Excel)",
+        targetAudience: "Segmento objetivo por definir",
+        messaging: `Impulso comercial para ${productName}`,
+        action: "Verificar la columna de marketing en el archivo original.",
+        reason: hint ? `Detección automática: El archivo Excel menciona "${hint}" para este producto.` : "Los datos indican una preferencia manual en el archivo."
+      };
+    }
+  }
 }
